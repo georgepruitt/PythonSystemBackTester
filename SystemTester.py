@@ -118,6 +118,7 @@ commission = 100 # deducted on a round turn basis
 numBarsToGoBack = 4000 # number of bars from the end of data
 rampUp = 100 # need this minimum of bars to calculate indicators
 sysName = 'BollingerBandSys' #System Name here
+initCapital = 100000
 
 
 #////////  DO NOT CHANGE BELOW /////////////////////////////////////////////////
@@ -317,7 +318,7 @@ for marketCnt in range(0,numMarkets):
         exitQuant.append(numShares)
         profit,trades,curShares = exitPos(price,myDate[i],tradeName,numShares)
         listOfTrades.append(trades)
-    systemMarket.setSysMarkInfo(sysName,myComName,listOfTrades,equity)
+    systemMarket.setSysMarkInfo(sysName,myComName,listOfTrades,equity,initCapital)
     systemMarketList.append(systemMarket)
     numRuns = numRuns + 1
 
