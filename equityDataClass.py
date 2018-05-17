@@ -25,6 +25,7 @@ class equityClass(object):
         self.minEquity = min(self.minEquity,tempEqu)
         minEqu = self.minEquity
         self.maxDD = max(self.maxDD,maxEqu-tempEqu)
+#        print(self.equityDate[-1]," ",self.maxDD," ",maxEqu," ",tempEqu," ",self.cumuClsEquity)
         maxDD = self.maxDD
         maxDD = maxDD
 
