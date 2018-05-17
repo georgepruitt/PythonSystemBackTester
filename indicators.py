@@ -1,3 +1,6 @@
+from math import atan
+from math import degrees
+
 
 class stochClass(object):
     def __init__(self):
@@ -122,6 +125,40 @@ class macdClass(object):
             self.smoothMACD = self.smoothMACD + 2 / smooth * (self.MACD - self.smoothMACD)
         return(self.MACD, self.smoothMACD)
 
+class dominantCycleClass(object):
+    def __init__(self):
+        self.imult = 0.635
+        self.qmult = 0.338
+        self.value1 = [0 for i in range(5)]
+        self.inPhase = [0 for i in range(5)]
+        self.quadrature = [0 for i in range(5)]
+        self.re = [0 for i in range(5)]
+        self.im = [0 for i in range(5)]
+        self.deltaPhase = [0 for i in range(5)]
+        self.instPeriod = [0 for i in range(5)]
+        self.period = [0 for i in range(5)]
+
+    def calcDomCycle(self,dates,hPrices,lPrices,cPrices,curBar,offset):
+        tempVal1 = (hPrices[curBar - offset] + lPrices[curBar-offset])/2
+        tempVal2 = (hPrices[curBar - offset - 7] + lPrices[curBar-offset - 7])/2
+        self.value1.append(tempVal1 - tempVal2)
+        self.inPhase.append(1.25*(self.value1[-5] - self.imult*self.value1[-3]) + self.imult*self.inPhase[-3])        
+        self.quadrature.append(self.value1[-3] - self.qmult*self.value1[-1] + self.qmult*self.quadrature[-2])
+        self.re.append(.2*(self.inPhase[-1]*self.inPhase[-2]+self.quadrature[-1]*self.quadrature[-2])+ 0.8*self.re[-1])
+        self.im.append(.2*(self.inPhase[-1]*self.quadrature[-2] - self.inPhase[-2]*self.quadrature[-1]) +.8*self.im[-1])
+        if self.re[-1] != 0.0: self.deltaPhase.append(degrees(atan(self.im[-1]/self.re[-1])))
+        if len(self.deltaPhase) > 51:
+            self.instPeriod.append(0)
+            value4 = 0
+            for count in range(1,51):
+                value4 += self.deltaPhase[-count]
+                if value4 > 360 and self.instPeriod[-1] == 0:
+                    self.instPeriod.append(count)
+            if self.instPeriod[-1] == 0: self.instPeriod.append(self.instPeriod[-1])
+            self.period.append(.25*self.instPeriod[-1]+.75*self.period[-1])
+            return(self.period[-1])
+        return(50)
+
 
 def highest(prices,lookBack,curBar,offset):
     result = 0.0
@@ -201,3 +238,4 @@ def keltnerChannels(dates,multiPrices,lookBack,numAtrs,curBar,offset):
     keltAvg = avgTP
     return keltUpChan, keltDnChan, keltAvg
    
+
