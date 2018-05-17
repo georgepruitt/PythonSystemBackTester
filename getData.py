@@ -6,7 +6,7 @@ from dataMasterLists import commName, bigPtVal, minMove
 from tkinter.filedialog import askopenfilenames
 from equityDataClass import equityClass
 
-dataClassList = list()
+
 
 fileName = "c:\PythonBackTester\dataMaster.csv"
 fileName = "dataMaster.csv"
@@ -26,6 +26,8 @@ def parseDate(dateString):
 
 
 def getData():
+    dataClassList = list()
+    dataClassList.clear()
     tempFileList = list()
     portfolioFileNames = list()
     totComms = 0
